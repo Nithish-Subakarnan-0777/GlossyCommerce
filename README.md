@@ -14,8 +14,7 @@ A cross-platform E-commerce application built with .NET MAUI Blazor Hybrid.
 - Admin panel to manage products
 
 ## Screenshots
-<img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/01515b32-9e41-4df3-84ff-7334e51cb3a6" />
-<img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/0a23d84b-0bb9-451f-b673-9f0ebe6393f8" />
+
 
 
 ## How to Run Locally
