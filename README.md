@@ -1,4 +1,4 @@
-<img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/5d2c5dde-8ac4-4e18-b61b-6696f2feff39" /># GlossyCommerce
+
 A cross-platform E-commerce application built with .NET MAUI Blazor Hybrid.
 
 ## Tech Stack
