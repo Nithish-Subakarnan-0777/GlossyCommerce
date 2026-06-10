@@ -1,0 +1,262 @@
+﻿@page "/admin"
+@rendermode InteractiveServer
+@using GlossyCommerce.Shared.Models
+@using GlossyCommerce.Shared.Services
+@inject HttpClient Http
+@inject AuthService Auth
+@inject NavigationManager Nav
+
+<PageTitle>Admin Dashboard</PageTitle>
+
+@if (Auth.CurrentUser == null || Auth.CurrentUser.Role != "Admin")
+{
+    <div class="glossy-card text-center" style="margin: 100px auto; max-width: 400px;">
+        <h3>Access Denied</h3>
+        <p>You must be an admin to view this secure dashboard.</p>
+        <button class="glossy-button mt-3" @onclick='() => Nav.NavigateTo("/login")'>Go to Login</button>
+    </div>
+}
+else
+{
+    <div class="admin-layout">
+        <div class="admin-panel glossy-card">
+            <h3>➕ Add New Product</h3>
+            <EditForm Model="@newProduct" OnValidSubmit="HandleAddProduct">
+                <DataAnnotationsValidator />
+                
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <InputText @bind-Value="newProduct.Name" class="glossy-input w-100" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Price ($)</label>
+                    <InputNumber @bind-Value="newProduct.Price" class="glossy-input w-100" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Photo URL</label>
+                    <InputText @bind-Value="newProduct.ImageUrl" class="glossy-input w-100" placeholder="https://..." required />
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <InputTextArea @bind-Value="newProduct.Description" class="glossy-input w-100" rows="3" />
+                </div>
+
+                <button type="submit" class="glossy-button w-100 mt-3">Upload to Store</button>
+            </EditForm>
+            
+            @if (showSuccessMsg)
+            {
+                <div class="success-msg mt-3">Product uploaded successfully!</div>
+            }
+        </div>
+
+        <div class="admin-panel glossy-card">
+            <h3>📊 Sales Tracking</h3>
+            
+            @if (dashboardData != null)
+            {
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <span class="stat-label">Total Orders</span>
+                        <span class="stat-value">@dashboardData.TotalOrders</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Revenue</span>
+                        <span class="stat-value text-blue">$@dashboardData.TotalRevenue.ToString("0.00")</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Profit</span>
+                        <span class="stat-value text-green">$@dashboardData.EstimatedProfit.ToString("0.00")</span>
+                    </div>
+                </div>
+
+                <h4 class="mt-4">Recent Transactions</h4>
+                <table class="glossy-table w-100">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (dashboardData.RecentOrders.Any())
+                        {
+                            @foreach (var order in dashboardData.RecentOrders)
+                            {
+                                <tr>
+                                    <td>#@order.Id</td>
+                                    <td>@order.CustomerName</td>
+                                    <td>$@order.TotalAmount.ToString("0.00")</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="3">No orders yet.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>Loading dashboard data...</p>
+            }
+        </div>
+
+        <div class="admin-panel glossy-card mt-4 full-width-panel">
+            <h3>🛍️ Manage Catalog</h3>
+            @if (!string.IsNullOrEmpty(deleteErrorMessage))
+            {
+                <div class="alert mt-2 mb-3" style="background: rgba(255, 0, 127, 0.1); color: var(--neon-pink); border: 1px solid var(--neon-pink); padding: 10px; border-radius: 8px;">
+                    ⚠️ @deleteErrorMessage
+                </div>
+            }
+            @if (products != null && products.Any())
+            {
+                <table class="glossy-table w-100">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in products)
+                        {
+                            <tr>
+                                <td>#@p.Id</td>
+                                <td>@p.Name</td>
+                                <td>$@p.Price.ToString("0.00")</td>
+                                <td>
+                                    <button class="glossy-button delete-btn" @onclick="() => RemoveProduct(p.Id)">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>Your catalog is currently empty.</p>
+            }
+        </div>
+    </div>
+}
+
+<style>
+    .admin-layout { 
+        display: grid; 
+        grid-template-columns: 1fr 1.5fr; 
+        gap: 30px; 
+        align-items: start; 
+    }
+    
+    .full-width-panel {
+        grid-column: 1 / -1; /* Forces the catalog panel to span both columns */
+    }
+
+    .admin-panel { padding: 30px; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 5px; font-weight: 500; font-size: 0.9rem; }
+    .w-100 { width: 100%; box-sizing: border-box; }
+    .mt-3 { margin-top: 15px; }
+    .mt-4 { margin-top: 25px; }
+    .success-msg { color: var(--neon-green); font-weight: bold; text-align: center; text-shadow: 0 0 5px rgba(57, 255, 20, 0.4); }
+    
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
+    .stat-box { background: rgba(0, 0, 0, 0.4); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.1); }
+    .stat-label { display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 5px; }
+    .stat-value { font-size: 1.5rem; font-weight: bold; }
+    
+    .glossy-table { border-collapse: collapse; margin-top: 10px; }
+    .glossy-table th, .glossy-table td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: var(--text-primary); }
+    
+    .delete-btn {
+        background: rgba(255,0,127,0.1); 
+        color: var(--neon-pink); 
+        border-color: var(--neon-pink); 
+        padding: 6px 12px; 
+        font-size: 0.8rem;
+        box-shadow: none;
+    }
+    .delete-btn:hover {
+        background: var(--neon-pink);
+        color: #000;
+        box-shadow: 0 0 15px var(--neon-pink);
+    }
+</style>
+
+@code {
+    private Product newProduct = new Product();
+    private DashboardResponse? dashboardData;
+    private List<Product>? products;
+    private bool showSuccessMsg = false;
+    private string? deleteErrorMessage = null;
+
+    public record DashboardResponse(int TotalOrders, decimal TotalRevenue, decimal EstimatedProfit, List<Order> RecentOrders);
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Only try to load data if they are actually an Admin!
+        if (Auth.CurrentUser != null && Auth.CurrentUser.Role == "Admin")
+        {
+            await LoadDashboard();
+            await LoadProducts();
+        }
+    }
+
+    private async Task LoadDashboard()
+    {
+        try { dashboardData = await Http.GetFromJsonAsync<DashboardResponse>("api/orders/dashboard"); }
+        catch (Exception ex) { Console.WriteLine($"Error fetching dashboard: {ex.Message}"); }
+    }
+
+    private async Task LoadProducts()
+    {
+        try { products = await Http.GetFromJsonAsync<List<Product>>("api/products"); }
+        catch (Exception ex) { Console.WriteLine($"Error fetching products: {ex.Message}"); }
+    }
+
+    private async Task HandleAddProduct()
+    {
+        var response = await Http.PostAsJsonAsync("api/products", newProduct);
+        if (response.IsSuccessStatusCode)
+        {
+            showSuccessMsg = true;
+            newProduct = new Product(); 
+            await LoadProducts(); // Instantly refresh the catalog table below
+            StateHasChanged();
+            
+            await Task.Delay(3000);
+            showSuccessMsg = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task RemoveProduct(int id)
+    {
+        deleteErrorMessage = null; // Clear previous errors
+        
+        var response = await Http.DeleteAsync($"api/products/{id}");
+        
+        if (response.IsSuccessStatusCode)
+        {
+            await LoadProducts(); // Refresh the list
+            StateHasChanged();
+        }
+        else
+        {
+            // Read the BadRequest message from our controller and display it
+            deleteErrorMessage = await response.Content.ReadAsStringAsync();
+            StateHasChanged();
+        }
+    }
+}

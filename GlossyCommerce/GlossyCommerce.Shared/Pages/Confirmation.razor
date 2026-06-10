@@ -1,0 +1,30 @@
+﻿@page "/confirmation"
+@inject NavigationManager Nav
+
+<PageTitle>Order Confirmed</PageTitle>
+
+<div class="confirmation-container glossy-card">
+    <div class="success-icon">✅</div>
+    <h2>Order Successfully Placed!</h2>
+    <p>Thank you for your purchase. A confirmation email has been sent to your inbox, and our admin team has been notified to start processing your order immediately.</p>
+    
+    <button class="glossy-button mt-4" @onclick='() => Nav.NavigateTo("/")'>Continue Shopping</button>
+</div>
+
+<style>
+    .confirmation-container {
+        max-width: 500px;
+        margin: 80px auto;
+        text-align: center;
+        padding: 50px 30px;
+    }
+    
+    .success-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+    }
+    
+    .mt-4 {
+        margin-top: 25px;
+    }
+</style>

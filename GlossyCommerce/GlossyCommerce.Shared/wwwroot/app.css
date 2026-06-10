@@ -1,0 +1,156 @@
+/* --- DARK NEON GLASSMORPHISM THEME --- */
+
+:root {
+    /* Core Colors */
+    --bg-dark: #0a0a0f;
+    --glass-bg: rgba(20, 20, 28, 0.7);
+    --glass-border: rgba(0, 238, 255, 0.2);
+    --glass-shadow: rgba(0, 0, 0, 0.6);
+    /* Neon Accents */
+    --neon-cyan: #00eeff;
+    --neon-cyan-glow: 0 0 15px rgba(0, 238, 255, 0.4);
+    --neon-pink: #ff007f;
+    --neon-green: #39ff14;
+    /* Text */
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0b8;
+}
+
+body {
+    background-color: var(--bg-dark);
+    /* Subtle neon gradients in the background corners */
+    background-image: radial-gradient(circle at top right, rgba(0, 238, 255, 0.05), transparent 40%), radial-gradient(circle at bottom left, rgba(255, 0, 127, 0.05), transparent 40%);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--text-primary);
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* The Core Glossy Panel Container */
+.glossy-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 var(--glass-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+    .glossy-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(0, 238, 255, 0.5);
+        box-shadow: var(--neon-cyan-glow);
+    }
+
+/* Minimalist Dark Input Fields */
+.glossy-input {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--text-primary);
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+    .glossy-input::placeholder {
+        color: #555566;
+    }
+
+    .glossy-input:focus {
+        background: rgba(0, 0, 0, 0.8);
+        border-color: var(--neon-cyan);
+        box-shadow: 0 0 10px rgba(0, 238, 255, 0.2);
+    }
+
+/* Slick Neon Action Button */
+.glossy-button {
+    background: transparent;
+    color: var(--neon-cyan);
+    border: 1px solid var(--neon-cyan);
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 0 10px rgba(0, 238, 255, 0.1) inset;
+}
+
+    .glossy-button:hover {
+        background: var(--neon-cyan);
+        color: #000000;
+        box-shadow: 0 0 20px var(--neon-cyan);
+    }
+
+    .glossy-button:disabled {
+        border-color: #444;
+        color: #444;
+        box-shadow: none;
+        cursor: not-allowed;
+    }
+
+/* --- OVERRIDES FOR SPECIFIC COMPONENTS --- */
+
+/* Navbar Overrides (Targets the styles inside MainLayout.razor) */
+.navbar-glass {
+    background: rgba(10, 10, 15, 0.85) !important;
+    border-bottom: 1px solid var(--glass-border) !important;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.8) !important;
+}
+
+.brand-logo {
+    background: linear-gradient(90deg, #ffffff, var(--neon-cyan)) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    text-shadow: 0 0 15px rgba(0, 238, 255, 0.3);
+}
+
+.nav-item {
+    color: var(--text-secondary) !important;
+}
+
+    .nav-item:hover, .nav-item.active {
+        color: var(--neon-cyan) !important;
+        background: rgba(0, 238, 255, 0.1) !important;
+        text-shadow: 0 0 8px rgba(0, 238, 255, 0.5);
+        border: 1px solid rgba(0, 238, 255, 0.2);
+    }
+
+/* Admin Dashboard Table Overrides */
+.glossy-table th, .glossy-table td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    color: var(--text-primary);
+}
+
+.stat-box {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.text-blue {
+    color: var(--neon-cyan) !important;
+    text-shadow: 0 0 8px rgba(0, 238, 255, 0.4);
+}
+
+.text-green {
+    color: var(--neon-green) !important;
+    text-shadow: 0 0 8px rgba(57, 255, 20, 0.4);
+}
+
+.status-badge {
+    background: rgba(0, 238, 255, 0.1) !important;
+    color: var(--neon-cyan) !important;
+    border: 1px solid var(--neon-cyan);
+}
+
+/* Checkout Alerts */
+.alert {
+    background: rgba(255, 0, 127, 0.1) !important;
+    color: var(--neon-pink) !important;
+    border: 1px solid rgba(255, 0, 127, 0.4) !important;
+    text-shadow: 0 0 5px rgba(255, 0, 127, 0.3);
+}

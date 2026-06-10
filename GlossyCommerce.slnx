@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="GlossyCommerce/GlossyCommerce.Shared/GlossyCommerce.Shared.csproj" />
+  <Project Path="GlossyCommerce/GlossyCommerce.Web.Client/GlossyCommerce.Web.Client.csproj" />
+  <Project Path="GlossyCommerce/GlossyCommerce.Web/GlossyCommerce.Web.csproj" />
+  <Project Path="GlossyCommerce/GlossyCommerce/GlossyCommerce.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
+</Solution>

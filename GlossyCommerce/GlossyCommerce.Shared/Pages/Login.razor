@@ -1,0 +1,73 @@
+﻿@page "/login"
+@rendermode InteractiveServer
+@using GlossyCommerce.Shared.Services
+@inject AuthService Auth
+@inject NavigationManager Nav
+
+<div class="glossy-card" style="max-width: 400px; margin: 100px auto; padding: 40px;">
+    <h2 class="text-center">@(isRegistering ? "Create Account" : "Sign In")</h2>
+    
+    <div class="form-group mt-4">
+        <label>Username</label>
+        <input @bind="username" class="glossy-input w-100" />
+    </div>
+    
+    <div class="form-group">
+        <label>Password</label>
+        <input type="password" @bind="password" class="glossy-input w-100" />
+    </div>
+
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <div style="color: red; margin-top: 10px;">@error</div>
+    }
+
+    <button class="glossy-button w-100 mt-4" @onclick="HandleAuth">
+        @(isRegistering ? "Register" : "Login")
+    </button>
+    
+    <p class="text-center mt-3" style="cursor: pointer; color: #007aff;" @onclick="() => isRegistering = !isRegistering">
+        @(isRegistering ? "Already have an account? Sign in" : "Need an account? Register")
+    </p>
+</div>
+
+@code {
+    private string username = "";
+    private string password = "";
+    private string error = "";
+    private bool isRegistering = false;
+
+    private async Task HandleAuth()
+    {
+        error = ""; // Clear old errors
+        
+        if (isRegistering)
+        {
+            Console.WriteLine("Attempting login...");
+            var result = await Auth.Register(username, password);
+            if (result.Success)
+            {
+                isRegistering = false;
+                error = "Registration successful. Please log in.";
+            }
+            else
+            {
+                error = result.ErrorMessage;
+            }
+        }
+        else
+        {
+            var result = await Auth.Login(username, password);
+            if (result.Success)
+            {
+                if (Auth.CurrentUser?.Role == "Admin") Nav.NavigateTo("/admin");
+                else Nav.NavigateTo("/");
+            }
+            else
+            {
+                // Display the exact error on the screen!
+                error = result.ErrorMessage;
+            }
+        }
+    }
+}

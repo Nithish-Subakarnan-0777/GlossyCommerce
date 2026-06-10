@@ -1,0 +1,82 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page">
+    <header class="navbar-glass">
+        <div class="nav-container">
+            <span class="brand-logo">GlossyCommerce</span>
+            <nav class="nav-links">
+                <NavLink class="nav-item" href="/" Match="NavLinkMatch.All">
+                    <span class="nav-icon">🛍️</span> Shop
+                </NavLink>
+                <NavLink class="nav-item" href="/admin">
+                    <span class="nav-icon">📊</span> Admin Panel
+                </NavLink>
+                <NavLink class="nav-item" href="/login">
+                    <span class="nav-icon">👤</span> Login
+                </NavLink>
+            </nav>
+        </div>
+    </header>
+
+    <main class="content-container">
+        @Body
+    </main>
+</div>
+
+<style>
+    .navbar-glass {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        zIndex: 1000;
+        padding: 16px 0;
+    }
+
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 24px;
+    }
+
+    .brand-logo {
+        font-size: 1.4rem;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        background: linear-gradient(90deg, #1c1c1e, #007aff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 24px;
+    }
+
+    .nav-item {
+        text-decoration: none;
+        color: var(--text-secondary);
+        font-weight: 500;
+        padding: 8px 16px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .nav-item:hover, .nav-item.active {
+        color: #007aff;
+        background: rgba(0, 122, 255, 0.08);
+    }
+
+    .content-container {
+        max-width: 1200px;
+        margin: 100px auto 40px auto;
+        padding: 0 24px;
+    }
+</style>
